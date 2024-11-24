@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Advent Calendar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a472a, #2f5233);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Snow effect */
+        .snow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="1" fill="white"/></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="0.5" fill="white"/></svg>');
+            animation: snow 10s linear infinite;
+            z-index: 1;
+            opacity: 0.7;
+        }
+
+        .snow:before {
+            content: '';
+            position: fixed;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="1" fill="white"/></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="0.5" fill="white"/></svg>');
+            animation: snow 15s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes snow {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 500px 1000px, 400px 400px; }
+        }
+
+        h1 {
+            font-family: 'Mountains of Christmas', cursive;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5),
+                         0 0 20px rgba(255,255,255,0.3),
+                         0 0 30px rgba(255,0,0,0.3);
+            font-size: 3.5em;
+            margin: 20px 0;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 2px;
+        }
+
+        .countdown-container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                        inset 0 0 20px rgba(255,255,255,0.1);
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 2;
+            min-width: 400px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transform: translateZ(0);
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0;
+            font-size: 2em;
+        }
+
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            min-width: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .countdown-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .countdown-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff4444;
+            text-shadow: 0 0 10px rgba(255,68,68,0.7);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .countdown-label {
+            font-size: 0.4em;
+            text-transform: uppercase;
+            margin-top: 5px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .current-time {
+            font-size: 1.3em;
+            margin-top: 15px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .day {
+            background: linear-gradient(145deg, #c41e3a, #8b0000);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .day::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: transform 0.5s;
+            transform: translateX(-100%);
+        }
+
+        .day:hover::before {
+            transform: translateX(100%);
+        }
+
+        .day:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .day .number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .day .message {
+            display: none;
+            font-size: 16px;
+            padding: 10px;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+
+        .day.opened {
+            background: linear-gradient(145deg, #2f5233, #1a472a);
+            animation: openDoor 0.5s ease-out forwards;
+        }
+
+        @keyframes openDoor {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .day.opened .message {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .volume-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 3;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .volume-control:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .countdown-container {
+                min-width: 300px;
+                padding: 15px;
+            }
+            .countdown {
+                font-size: 1.4em;
+                gap: 10px;
+            }
+            .countdown-item {
+                min-width: 70px;
+                padding: 10px;
+            }
+            .calendar {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                padding: 15px;
+            }
+            .day {
+                min-height: 100px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="snow"></div>
+    <div class="volume-control" onclick="toggleMute()" id="volumeBtn">🔊</div>
+    <h1>🎄 Christmas Advent Calendar 🎄</h1>
+    <div class="countdown-container">
+        <div class="countdown">
+            <div class="countdown-item">
+                <span class="countdown-value" id="days">00</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-value" id="hours">00</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-value" id="minutes">00</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-value" id="seconds">00</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+        <div class="current-time" id="current-time">Current Time: 00:00:00</div>
+    </div>
+    <div class="calendar">
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">1</div>
+            <div class="message">Time to start decorating the Christmas tree! 🎄</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">2</div>
+            <div class="message">Make some hot chocolate with marshmallows ☕</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">3</div>
+            <div class="message">Write your letter to Santa Claus 📝</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">4</div>
+            <div class="message">Sing your favorite Christmas carol 🎵</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">5</div>
+            <div class="message">Bake some Christmas cookies! 🍪</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">6</div>
+            <div class="message">Make a paper snowflake ❄️</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">7</div>
+            <div class="message">Watch a Christmas movie 🎬</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">8</div>
+            <div class="message">Wear your favorite Christmas sweater 👕</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">9</div>
+            <div class="message">Make a gingerbread house 🏠</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">10</div>
+            <div class="message">Send Christmas cards to friends 💌</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">11</div>
+            <div class="message">Hang up Christmas lights 💡</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">12</div>
+            <div class="message">Make a Christmas wish list 📋</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">13</div>
+            <div class="message">Do a random act of kindness 💝</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">14</div>
+            <div class="message">Build a snowman (real or paper!) ⛄</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">15</div>
+            <div class="message">Start wrapping presents 🎁</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">16</div>
+            <div class="message">Make paper chain decorations 🔗</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">17</div>
+            <div class="message">Listen to Christmas music 🎼</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">18</div>
+            <div class="message">Make Christmas ornaments 🎨</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">19</div>
+            <div class="message">Read a Christmas story 📚</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">20</div>
+            <div class="message">Donate to those in need 🤝</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">21</div>
+            <div class="message">Make paper snowflakes ❄️</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">22</div>
+            <div class="message">Plan Christmas dinner menu 🍽️</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">23</div>
+            <div class="message">Put out milk and cookies for Santa 🥛</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">24</div>
+            <div class="message">Christmas Eve - Time for family! 👨‍👩‍👧‍👦</div>
+        </div>
+        <div class="day" onclick="this.classList.add('opened')">
+            <div class="number">25</div>
+            <div class="message">Merry Christmas! 🎄🎅✨</div>
+        </div>
+    </div>
+
+    <script>
+        // Speech synthesis setup
+        let isMuted = false;
+        const synth = window.speechSynthesis;
+        let lastMinuteAnnounced = -1;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('volumeBtn').textContent = isMuted ? '🔇' : '🔊';
+        }
+
+        function speakMessage(message) {
+            if (isMuted) return;
+            
+            // Cancel any ongoing speech
+            synth.cancel();
+            
+            // Clean the message from emojis
+            const cleanMessage = message.replace(/[\u{1F300}-\u{1F6FF}]/gu, '');
+            
+            const utterance = new SpeechSynthesisUtterance(cleanMessage);
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            synth.speak(utterance);
+        }
+
+        function announceTimeUntilChristmas(days, hours, minutes) {
+            if (isMuted) return;
+
+            let message = '';
+            if (days === 0) {
+                if (hours === 0) {
+                    message = `${minutes} minutes until Christmas!`;
+                } else {
+                    message = `${hours} hours and ${minutes} minutes until Christmas!`;
+                }
+            } else {
+                message = `${days} days, ${hours} hours, and ${minutes} minutes until Christmas!`;
+            }
+
+            speakMessage(message);
+        }
+
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const christmas = new Date(currentYear, 11, 25); // Month is 0-based, so 11 is December
+            
+            if (now > christmas) {
+                christmas.setFullYear(currentYear + 1);
+            }
+            
+            const difference = christmas - now;
+            
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            // Update current time
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = `Current Time: ${timeString}`;
+
+            // Announce time every minute
+            const currentMinute = now.getMinutes();
+            if (currentMinute !== lastMinuteAnnounced) {
+                lastMinuteAnnounced = currentMinute;
+                announceTimeUntilChristmas(days, hours, minutes);
+            }
+        }
+
+        // Add click event listeners to all days
+        document.querySelectorAll('.day').forEach(day => {
+            day.addEventListener('click', function() {
+                if (!this.classList.contains('opened')) {
+                    this.classList.add('opened');
+                    const message = this.querySelector('.message').textContent;
+                    speakMessage(message);
+                }
+            });
+        });
+
+        // Update countdown every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
